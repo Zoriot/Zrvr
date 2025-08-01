@@ -1,0 +1,19 @@
+name: CI Template
+
+on:
+  workflow_call:
+    inputs:
+      run-scripts:
+        required: true
+        type: boolean
+
+jobs:
+  run-scripts:
+    if: ${{ inputs.run-scripts }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run download scripts
+        run: |
+          bash scripts/download-paper.sh "$PAPER_URL" ./artifacts
+          bash scripts/download-velocity.sh
