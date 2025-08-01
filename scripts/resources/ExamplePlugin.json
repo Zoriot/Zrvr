@@ -1,0 +1,19 @@
+{
+  "name": "ExamplePlugin",
+  "version": "1.0.0",
+  "download_url": "https://example.com/ExamplePlugin-1.0.0.jar",
+  "checksum": {
+    "type": "sha256",
+    "value": "d2f5e1... (full hash here)"
+  },
+  "dependencies": [
+    {
+      "name": "dependency",
+      "download_url": "https://example.com/dependency.jar"
+    }
+  ],
+  "config_template_url": "https://example.com/ExamplePlugin/config.yml",
+  "fallbacks": [
+    "https://mirror.example.org/ExamplePlugin-1.0.0.jar"
+  ]
+}

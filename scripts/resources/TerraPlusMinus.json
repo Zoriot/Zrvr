@@ -1,0 +1,11 @@
+{
+  "name": "TerraPlusMinus",
+  "version": "1.5.0",
+  "download_url": "https://github.com/BTE-Germany/TerraPlusMinus/releases/download/v1.5.0/terraplusminus-1.5.0.jar",
+  "checksum": {
+    "type": "sha256",
+    "value": "74d695da57ccd5ad2de861be418c482a5d2cec15b83242d9237a5c95701881a9"
+  },
+  
+  "config_template_url": "https://raw.githubusercontent.com/BTE-Germany/TerraPlusMinus/refs/heads/master/src/main/resources/config.yml"
+}
