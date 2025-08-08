@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Replaces ${VAR} placeholders in all files (recursively) with their environment variable values
-
 set -e
 
 # Check if dry-run mode
