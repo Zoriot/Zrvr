@@ -21,14 +21,10 @@ fi
 # Function to safely substitute env vars in a file
 process_file() {
     local file="$1"
+    local tmp=$(mktemp)
 
-    # Use temp file to hold transformed content
-    tmp=$(mktemp)
-
-    while IFS= read -r line || [[ -n "$line" ]]; do
-        # Perform env var substitution
-        eval "echo \"$line\"" >> "$tmp"
-    done < "$file"
+    # Use envsubst to reliably replace environment variables
+    envsubst < "$file" > "$tmp"
 
     if [ "$DRY_RUN" = true ]; then
         echo "=== $file ==="
