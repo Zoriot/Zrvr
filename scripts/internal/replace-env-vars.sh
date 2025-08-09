@@ -41,7 +41,8 @@ process_file() {
 if [[ -f "$TARGET" ]]; then
     process_file "$TARGET"
 elif [[ -d "$TARGET" ]]; then
-    find "$TARGET" -type f | while read -r file; do
+    # Exclude .jar files (add more extensions as needed: -o -name "*.zip" etc.)
+    find "$TARGET" -type f ! -name "*.jar" | while read -r file; do
         process_file "$file"
     done
 else

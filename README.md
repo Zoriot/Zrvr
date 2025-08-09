@@ -3,12 +3,12 @@
 This repo contains:
 
 - **scripts/** – Bash helpers for:
-    - [`download-paper.sh`](https://github.com/Zoriot/Zrvr/blob/dev/scripts/download-paper.sh)
-    - [`download-velocity.sh`](https://github.com/Zoriot/Zrvr/blob/dev/scripts/download-velocity.sh)
-    - [`download-plugins.sh`](https://github.com/Zoriot/Zrvr/blob/dev/scripts/download-plugins.sh)
-    - [`replace-env-vars.sh`](https://github.com/Zoriot/Zrvr/blob/dev/scripts/replace-env-vars.sh)
-    - [`copy.sh`](https://github.com/Zoriot/Zrvr/blob/dev/scripts/copy.sh)
-    - [`start_server.sh`](https://github.com/Zoriot/Zrvr/blob/dev/scripts/start_server.sh)
+  - **external/** – Downloading and managing external resources.
+    - [`download-from-papermc.sh`](scripts/external/download-from-papermc.sh)
+    - [`download-plugins.sh`](scripts/external/download-plugins.sh)
+  - **internal/** – Managing internal resources.
+    - [`replace-env-vars.sh`](scripts/internal/replace-env-vars.sh)
+    - [`start_server.sh`](scripts/internal/start_server.sh)
 
 - **.github/workflows/** – GitHub Actions templates you can include via [`uses:`](https://docs.github.com/actions/using-workflows/reusing-workflows) in your other repos.
 

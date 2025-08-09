@@ -4,9 +4,8 @@
 # Process plugin config templates to generate the config files with secrets
 #
 
-# TODO
 echo "Processing config templates..."
-sh "/app/tools/replace-env-vars.sh /app/plugins/"
+/app/tools/replace-env-vars.sh /app/plugins/
 
 # Get memory from env variable or use default value of 4GB
 
