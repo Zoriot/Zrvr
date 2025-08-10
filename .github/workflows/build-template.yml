@@ -57,14 +57,13 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
-          context: Zrvr/
+          context: .
+          file: ./Zrvr/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args:
-            APP_PATH: './${{ github.event.inputs.service) }}'
-            MINECRAFT_VERSION: '${{ github.event.inputs.mcversion) }}'
-            TYPE: '${{ github.event.inputs.type }}'
+            APP_PATH=./${{ github.event.inputs.service }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
