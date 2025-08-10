@@ -15,6 +15,8 @@ COPY --chown=mc:mc ${APP_PATH}/ ./
 COPY --chown=mc:mc Zrvr/scripts/internal/ ./tools/
 COPY --chown=mc:mc Zrvr/scripts/external/ ./tools-external/
 
+ADD https://github.com/itzg/mc-server-runner/releases/download/1.13.2/mc-server-runner_1.13.2_linux_amd64.tar.gz /tmp/mc-server-runner.tgz
+
 # Install required tools + Download and configure server
 RUN apt-get -y update && apt-get -y install -y jq &&  \
     apt-get -y install -y gettext-base && \
@@ -23,10 +25,13 @@ RUN apt-get -y update && apt-get -y install -y jq &&  \
     echo "eula=true" > eula.txt && chmod +x ./tools-external/download-plugins.sh &&  \
     ./tools-external/download-plugins.sh ./plugin_json/* && rm -rf /var/lib/apt/lists/* ./plugin_json ./tools-external \
     && chown -R mc:mc /app && \
-    chmod +x ./tools/start_server.sh && chmod +x ./tools/replace-env-vars.sh
+    chmod +x ./tools/start_server.sh && chmod +x ./tools/replace-env-vars.sh &&  \
+    tar -xf /tmp/mc-server-runner.tgz -C /usr/local/bin mc-server-runner && rm /tmp/mc-server-runner.tgz
 
 USER mc
 
 EXPOSE 25565
 
 ENTRYPOINT ["tools/start_server.sh"]
+
+STOPSIGNAL SIGTERM
