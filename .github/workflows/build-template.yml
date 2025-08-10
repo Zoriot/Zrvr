@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Build Custom Zrvr Docker Image
 
 on:
   push:
@@ -9,11 +9,27 @@ on:
         required: true
       mcversion:
         description: 'Minecraft version (e.g., 1.20.5)'
-        required: true
+        required: false
         default: '1.21.4'
       type:
         description: 'Instance type (e.g., paper, velocity)'
+        required: false
+        default: 'paper'
+  workflow_call:
+    inputs:
+      service:
+        description: 'Service folder name (e.g., Lobby)'
         required: true
+        type: string
+      mcversion:
+        description: 'Minecraft version (e.g., 1.20.5)'
+        required: false
+        type: string
+        default: '1.21.4'
+      type:
+        description: 'Instance type (e.g., paper, velocity)'
+        required: false
+        type: string
         default: 'paper'
 
 env:
@@ -62,8 +78,10 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:
-            APP_PATH=./${{ github.event.inputs.service }}
+          build-args: |
+            APP_PATH=./${{ github.event.inputs.service || inputs.service }}
+            MINECRAFT_VERSION=${{ github.event.inputs.mcversion || inputs.mcversion }}
+            TYPE=${{ github.event.inputs.type || inputs.type }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
