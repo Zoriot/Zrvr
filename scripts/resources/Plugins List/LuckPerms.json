@@ -1,0 +1,9 @@
+{
+    "name": "LuckPerms",
+    "version": "5.5.10",
+    "download_url": "https://download.luckperms.net/1595/bukkit/loader/LuckPerms-Bukkit-5.5.10.jar",
+    "checksum": {
+      "type": "sha256",
+      "value": "93b41b00077143c045caa433fcce17e45f072bbbb4ff15a4f68caf900f8fccd1"
+    }
+  }
