@@ -4,10 +4,16 @@
 # Process plugin config templates to generate the config files with secrets
 #
 
-echo "Processing config templates..."
-ENV_ARGS=$(jq -r '.["env-args"] | join(" ")' ./app.json) && \
-../Zrvr/scripts/internal/replace-env-vars.sh $ENV_ARGS
+# Extract ENV_ARGS from app.json
+ENV_ARGS=$(jq -r '.["env-args"] | join(" ")' ./app.json)
 
+# Only call replace-env-vars.sh if ENV_ARGS is not empty
+if [ -n "$ENV_ARGS" ]; then
+    echo "Processing config templates with args: $ENV_ARGS"
+    ../Zrvr/scripts/internal/replace-env-vars.sh $ENV_ARGS
+else
+    echo "No env args found, skipping template processing"
+fi
 # Get memory from env variable or use default value of 4GB
 
 if [ -z "$MEMORY" ]; then
