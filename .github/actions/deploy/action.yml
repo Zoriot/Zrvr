@@ -26,6 +26,6 @@ runs:
         key: ${{ env.SSH_KEY }}
         script: |
           cd ~/zrvr
-          docker compose pull
-          docker compose down || true
-          docker compose up -d
+          docker compose -f ${{ inputs.compose-file }} pull
+          docker compose -f ${{ inputs.compose-file }} down || true
+          docker compose -f ${{ inputs.compose-file }} up -d
