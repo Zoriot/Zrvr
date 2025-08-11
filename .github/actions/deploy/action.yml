@@ -16,7 +16,7 @@ runs:
         username: ${{ env.SSH_USER }}
         key: ${{ env.SSH_KEY }}
         source: ${{ inputs.compose-file }}
-        target: "~/zrvr/docker-compose.yml"
+        target: "~/zrvr/"
 
     - name: Deploy application via SSH
       uses: appleboy/ssh-action@v1
