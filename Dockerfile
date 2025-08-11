@@ -20,6 +20,7 @@ COPY --chown=mc:mc Zrvr/scripts/external/ ../Zrvr/scripts/external/
 ADD https://github.com/itzg/mc-server-runner/releases/download/1.13.2/mc-server-runner_1.13.2_linux_amd64.tar.gz /tmp/mc-server-runner.tgz
 
 ENV SCRIPTS_CHECKSUM=${CACHE_BUST}
+ENV GOSU_VERSION 1.17
 
 RUN apt-get -y update && \
     apt-get -y install -y jq gettext-base && \
@@ -32,7 +33,27 @@ RUN apt-get -y update && \
     && chown -R mc:mc /app && \
     chmod +x ../Zrvr/scripts/internal/start_server.sh && chmod +x ../Zrvr/scripts/internal/replace-env-vars.sh &&  \
     tar -xf /tmp/mc-server-runner.tgz -C /usr/local/bin mc-server-runner && rm /tmp/mc-server-runner.tgz && \
-    chown -R mc:mc /app
+    set -eux; \
+    	savedAptMark="$(apt-mark showmanual)"; \
+    	apt-get update; \
+    	apt-get install -y --no-install-recommends ca-certificates gnupg wget; \
+    	rm -rf /var/lib/apt/lists/*; \
+    	\
+    	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
+    	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+    	wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
+    	\
+    	export GNUPGHOME="$(mktemp -d)"; \
+    	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+    	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
+    	gpgconf --kill all; \
+    	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
+    	\
+    	apt-mark auto '.*' > /dev/null; \
+    	[ -z "$savedAptMark" ] || apt-mark manual "$savedAptMark"; \
+    	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    	\
+    	chmod +x /usr/local/bin/gosu;
 
 EXPOSE 25565
 
