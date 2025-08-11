@@ -34,8 +34,6 @@ RUN apt-get -y update && \
     tar -xf /tmp/mc-server-runner.tgz -C /usr/local/bin mc-server-runner && rm /tmp/mc-server-runner.tgz && \
     chown -R mc:mc /app
 
-USER mc
-
 EXPOSE 25565
 
 ENTRYPOINT ["../Zrvr/scripts/internal/start_server.sh"]
