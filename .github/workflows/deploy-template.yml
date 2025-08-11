@@ -3,15 +3,6 @@ name: Deploy Template
 on:
   workflow_call:
     inputs:
-      ssh-host:
-        required: true
-        type: string
-      ssh-user:
-        required: true
-        type: string
-      ssh-key:
-        required: true
-        type: string
       compose-file:
         required: true
         type: string
