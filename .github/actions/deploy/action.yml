@@ -9,13 +9,19 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Write .env from one secret
+      run: printf "%s" '${{ secrets.ENV_FILE }}' > .env
+      shell: bash
+
     - name: Copy docker-compose file to remote
       uses: appleboy/scp-action@v1
       with:
         host: ${{ env.SSH_HOST }}
         username: ${{ env.SSH_USER }}
         key: ${{ env.SSH_KEY }}
-        source: ${{ inputs.compose-file }}
+        source:
+          - ${{ inputs.compose-file }}
+          - .env
         target: "~/zrvr/"
 
     - name: Deploy application via SSH
