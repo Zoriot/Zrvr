@@ -7,6 +7,7 @@ inputs:
   registry:
     required: false
     default: "ghcr.io/"
+    description: "Docker registry to push the image to"
   docker-username:
     required: false
     description: "Username for Docker registry login, if needed"
