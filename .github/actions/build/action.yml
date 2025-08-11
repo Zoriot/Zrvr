@@ -8,6 +8,14 @@ inputs:
     required: false
     description: "Environment tag for the Docker image (e.g., prod, dev)"
     default: "prod"
+  mcversion:
+    required: false
+    description: "Minecraft version to use in the Docker image"
+    default: "1.21.4"
+  type:
+    required: false
+    description: "Type of the service (e.g., paper, velocity)"
+    default: "paper"
 outputs:
   image:
     value: ${{ steps.meta.outputs.image }}
