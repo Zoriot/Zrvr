@@ -5,9 +5,6 @@ inputs:
   compose-file:
     required: true
     description: "Path to the docker-compose file to deploy (e.g., docker-compose-prod.yml)"
-  ENV_FILE:
-    required: true
-    description: "Environment variables file content as a secret (e.g., .env file content)"
 
 runs:
   using: "composite"
@@ -22,9 +19,7 @@ runs:
         host: ${{ env.SSH_HOST }}
         username: ${{ env.SSH_USER }}
         key: ${{ env.SSH_KEY }}
-        source:
-          - "${{ inputs.compose-file }}"
-          - ".env"
+        source: "${{ inputs.compose-file }},.env"
         target: "~/zrvr/"
 
     - name: Deploy application via SSH
