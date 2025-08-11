@@ -1,0 +1,31 @@
+name: "Deploy via SSH"
+description: "Copy docker-compose file and deploy using docker compose over SSH"
+
+inputs:
+  compose-file:
+    description: "Path to docker-compose file in the caller workspace"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Copy docker-compose file to remote
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        source: ${{ inputs.compose-file }}
+        target: "~/zrvr/docker-compose.yml"
+
+    - name: Deploy application via SSH
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd ~/zrvr
+          docker compose pull
+          docker compose down || true
+          docker compose up -d

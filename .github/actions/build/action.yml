@@ -1,0 +1,49 @@
+name: "Build Terra"
+description: "Build and package Terra service"
+inputs:
+  service:
+    required: true
+    description: "Service folder name (e.g., Lobby)"
+  registry:
+    required: false
+    default: "ghcr.io/"
+  docker-username:
+    required: false
+    description: "Username for Docker registry login, if needed"
+  docker-password:
+    required: false
+    description: "Password for Docker registry login, if needed"
+  environment:
+    required: false
+    description: "Environment tag for the Docker image (e.g., prod, dev)"
+    default: "prod"
+outputs:
+  image:
+    value: ${{ steps.meta.outputs.image }}
+    description: "The built Docker image with tag"
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - id: meta
+      shell: bash
+      run: |
+        IMAGE="${{ inputs.registry }}${{ inputs.service }}:${{ inputs.environment }}"
+        echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+
+    - name: Docker login (optional)
+      if: ${{ inputs.docker-username != '' && inputs.docker-password != '' }}
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.docker-username }}
+        password: ${{ inputs.docker-password }}
+
+    - name: Build & push
+      shell: bash
+      run: |
+        docker build -t "${{ steps.meta.outputs.image }}" .
+        if [ -n "${{ inputs.docker-username }}" ]; then
+          docker push "${{ steps.meta.outputs.image }}"
+        fi
