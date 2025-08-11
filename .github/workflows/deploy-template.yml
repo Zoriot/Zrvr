@@ -3,16 +3,45 @@ name: Deploy Template
 on:
   workflow_call:
     inputs:
-      env-file:
+      ssh-host:
         required: true
         type: string
+      ssh-user:
+        required: true
+        type: string
+      ssh-key:
+        required: true
+        type: string
+      compose-file:
+        required: true
+        type: string
+      environment:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Replace env vars
-        run: bash scripts/replace-env-vars.sh "$INPUT_ENV-FILE"
-      - name: Deploy application
-        run: ./deploy.sh
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Copy docker-compose file
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ inputs.ssh-host }}
+          username: ${{ inputs.ssh-user }}
+          key: ${{ inputs.ssh-key }}
+          source: ${{ inputs.compose-file }}
+          target: "~/docker-compose.yml"
+      - name: Deploy application via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ inputs.ssh-host }}
+          username: ${{ inputs.ssh-user }}
+          key: ${{ inputs.ssh-key }}
+          script: |
+            docker compose pull
+            docker compose down || true
+            docker compose up -d

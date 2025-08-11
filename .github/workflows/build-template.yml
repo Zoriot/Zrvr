@@ -1,20 +1,6 @@
 name: Build Custom Zrvr Docker Image
 
 on:
-  push:
-  workflow_dispatch:
-    inputs:
-      service:
-        description: 'Service folder name (e.g., Lobby)'
-        required: true
-      mcversion:
-        description: 'Minecraft version (e.g., 1.20.5)'
-        required: false
-        default: '1.21.4'
-      type:
-        description: 'Instance type (e.g., paper, velocity)'
-        required: false
-        default: 'paper'
   workflow_call:
     inputs:
       service:
@@ -31,6 +17,10 @@ on:
         required: false
         type: string
         default: 'paper'
+      environment:
+        required: false
+        type: string
+        default: ''
 
 env:
   REGISTRY: ghcr.io
@@ -42,6 +32,8 @@ jobs:
       contents: read
       packages: write
       id-token: write
+
+    environment: ${{ inputs.environment }}
 
     steps:
       - name: Checkout repository
@@ -69,7 +61,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}${{ github.event.inputs.service && format('/{0}', github.event.inputs.service) }}
+          images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ inputs.service }}
 
       - name: Build and push Docker image
         id: build-and-push
@@ -81,9 +73,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            APP_PATH=./${{ github.event.inputs.service || inputs.service }}
-            MINECRAFT_VERSION=${{ github.event.inputs.mcversion || inputs.mcversion }}
-            TYPE=${{ github.event.inputs.type || inputs.type }}
+            APP_PATH=./${{ inputs.service }}
+            MINECRAFT_VERSION=${{ inputs.mcversion }}
+            TYPE=${{ inputs.type }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
