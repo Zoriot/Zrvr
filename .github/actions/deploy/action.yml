@@ -13,8 +13,8 @@ runs:
   using: "composite"
   steps:
     - name: Write .env from one secret
-      run: printf "%s" '${{ secrets.ENV_FILE }}' > .env
       shell: bash
+      run: printf "%s" '${{ env.ENV_FILE }}' > .env
 
     - name: Copy docker-compose file to remote
       uses: appleboy/scp-action@v1
