@@ -31,7 +31,8 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/* ./plugin_json/ ../Zrvr/scripts/external/ \
     && chown -R mc:mc /app && \
     chmod +x ../Zrvr/scripts/internal/start_server.sh && chmod +x ../Zrvr/scripts/internal/replace-env-vars.sh &&  \
-    tar -xf /tmp/mc-server-runner.tgz -C /usr/local/bin mc-server-runner && rm /tmp/mc-server-runner.tgz
+    tar -xf /tmp/mc-server-runner.tgz -C /usr/local/bin mc-server-runner && rm /tmp/mc-server-runner.tgz && \
+    chown -R mc:mc /app
 
 USER mc
 
