@@ -25,9 +25,9 @@ RUN apt-get -y update && \
     apt-get -y install -y jq gettext-base && \
     chmod +x ../Zrvr/scripts/external/download-from-papermc.sh &&  \
     ../Zrvr/scripts/external//download-from-papermc.sh ${TYPE} ${MINECRAFT_VERSION} && \
-    echo "eula=true" > eula.txt && chmod +x ../Zrvr/scripts/external/download-plugins.sh
-RUN PLUGIN_ARGS=$(jq -r '.["plugins-args"] | join(" ")' ./app.json) && \
-    ../Zrvr/scripts/external/download-plugins.sh $PLUGIN_ARGS && \
+    echo "eula=true" > eula.txt && chmod +x ../Zrvr/scripts/external/download-plugins.sh &&  \
+    PLUGIN_ARGS=$(jq -r '.["plugins-args"] | join(" ")' ./app.json) && \
+    ../Zrvr/scripts/external/download-plugins.sh "$PLUGIN_ARGS" && \
     rm -rf /var/lib/apt/lists/* ./plugin_json/ ../Zrvr/scripts/external/ \
     && chown -R mc:mc /app && \
     chmod +x ../Zrvr/scripts/internal/start_server.sh && chmod +x ../Zrvr/scripts/internal/replace-env-vars.sh &&  \
