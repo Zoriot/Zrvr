@@ -28,20 +28,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Copy docker-compose file
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v1
         with:
-          host: ${{ inputs.ssh-host }}
-          username: ${{ inputs.ssh-user }}
-          key: ${{ inputs.ssh-key }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
           source: ${{ inputs.compose-file }}
-          target: "~/docker-compose.yml"
+          target: "~/zrvr/docker-compose.yml"
       - name: Deploy application via SSH
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1
         with:
-          host: ${{ inputs.ssh-host }}
-          username: ${{ inputs.ssh-user }}
-          key: ${{ inputs.ssh-key }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
+            cd ~/zrvr
             docker compose pull
             docker compose down || true
             docker compose up -d
