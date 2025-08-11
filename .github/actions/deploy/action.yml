@@ -5,6 +5,9 @@ inputs:
   compose-file:
     required: true
     description: "Path to the docker-compose file to deploy (e.g., docker-compose-prod.yml)"
+  ENV_FILE:
+    required: true
+    description: "Environment variables file content as a secret (e.g., .env file content)"
 
 runs:
   using: "composite"
