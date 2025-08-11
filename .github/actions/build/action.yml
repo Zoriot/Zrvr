@@ -4,16 +4,6 @@ inputs:
   service:
     required: true
     description: "Service folder name (e.g., Lobby)"
-  registry:
-    required: false
-    default: "ghcr.io/"
-    description: "Docker registry to push the image to"
-  docker-username:
-    required: false
-    description: "Username for Docker registry login, if needed"
-  docker-password:
-    required: false
-    description: "Password for Docker registry login, if needed"
   environment:
     required: false
     description: "Environment tag for the Docker image (e.g., prod, dev)"
@@ -27,24 +17,46 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        submodules: 'true'
 
-    - id: meta
-      shell: bash
-      run: |
-        IMAGE="${{ inputs.registry }}${{ inputs.service }}:${{ inputs.environment }}"
-        echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-    - name: Docker login (optional)
-      if: ${{ inputs.docker-username != '' && inputs.docker-password != '' }}
+    - name: Log into GitHub Container Registry
       uses: docker/login-action@v3
       with:
-        username: ${{ inputs.docker-username }}
-        password: ${{ inputs.docker-password }}
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build & push
+    - name: Extract Docker metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ inputs.service }}
+
+    - name: Calculate scripts checksum
+      id: checksum
       shell: bash
       run: |
-        docker build -t "${{ steps.meta.outputs.image }}" .
-        if [ -n "${{ inputs.docker-username }}" ]; then
-          docker push "${{ steps.meta.outputs.image }}"
-        fi
+        chmod +x ./Zrvr/scripts/external/calculate-checksum.sh
+        SCRIPTS_CHECKSUM=$(./Zrvr/scripts/external/calculate-checksum.sh)
+        echo "SCRIPTS_CHECKSUM=$SCRIPTS_CHECKSUM" >> $GITHUB_ENV
+
+    - name: Build and push Docker image
+      id: build-and-push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Zrvr/Dockerfile
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          APP_PATH=./${{ inputs.service }}
+          MINECRAFT_VERSION=${{ inputs.mcversion }}
+          TYPE=${{ inputs.type }}
+          SCRIPTS_CHECKSUM=${{ env.SCRIPTS_CHECKSUM }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
