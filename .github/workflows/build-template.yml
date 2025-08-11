@@ -63,6 +63,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ inputs.service }}
 
+      - name: Calculate scripts checksum
+        id: checksum
+        run: |
+          chmod +x ./Zrvr/scripts/external/calculate-checksum.sh
+          SCRIPTS_CHECKSUM=$(./Zrvr/scripts/external/calculate-checksum.sh)
+          echo "SCRIPTS_CHECKSUM=$SCRIPTS_CHECKSUM" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v5
@@ -76,6 +83,7 @@ jobs:
             APP_PATH=./${{ inputs.service }}
             MINECRAFT_VERSION=${{ inputs.mcversion }}
             TYPE=${{ inputs.type }}
+            SCRIPTS_CHECKSUM=${{ env.SCRIPTS_CHECKSUM }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

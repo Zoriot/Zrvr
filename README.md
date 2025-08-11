@@ -23,4 +23,19 @@ This repo contains:
 #### To-do
 - [ ] Automatic Plugin Updates
 
-<!-- TODO Add Content how to add it & use it (Git Module) --!
+<!-- TODO Add Content how to add it & use it (Git Module) -->
+
+## Building Docker Images Locally
+
+You can build your Zrvr Docker image locally using the provided script:
+
+```sh
+chmod +x ./scripts/external/build-image.sh
+./scripts/external/build-image.sh ./<service-folder>
+```
+
+Replace `<service-folder>` with the folder name of the service you want to build (e.g., `Lobby`, `Terra`, etc.).
+
+This script will:
+- Calculate a checksum of all shell scripts for cache busting.
+- Build the Docker image with the correct build arguments.
