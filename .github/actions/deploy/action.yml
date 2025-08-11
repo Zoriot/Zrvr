@@ -23,8 +23,8 @@ runs:
         username: ${{ env.SSH_USER }}
         key: ${{ env.SSH_KEY }}
         source:
-          - ${{ inputs.compose-file }}
-          - .env
+          - "${{ inputs.compose-file }}"
+          - ".env"
         target: "~/zrvr/"
 
     - name: Deploy application via SSH
