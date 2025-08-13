@@ -33,7 +33,7 @@ runs:
         username: ${{ env.SSH_USER }}
         key: ${{ env.SSH_KEY }}
         script: |
-          cd ~/zrvr
+          cd ${{ inputs.path-to-deploy-folder }}
           docker compose -f ${{ inputs.compose-file }} pull
           docker compose -f ${{ inputs.compose-file }} down || true
           docker compose -f ${{ inputs.compose-file }} up -d
