@@ -52,7 +52,7 @@ RUN apt-get -y update && \
         rm -rf /var/lib/apt/lists/* ./plugin_json/ ../Zrvr/scripts/external/
 # Try to run it separate because otherwise it seems not to work
 RUN tar -xf /tmp/mc-server-runner.tgz -C /usr/local/bin mc-server-runner && \
-    rm /tmp/mc-server-runner.tgz \
+    rm /tmp/mc-server-runner.tgz
 
 EXPOSE 25565
 
