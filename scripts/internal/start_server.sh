@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 #
 # Process plugin config templates to generate the config files with secrets
