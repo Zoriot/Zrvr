@@ -28,7 +28,6 @@ RUN apt-get -y update && \
     echo "eula=true" > eula.txt && \
     PLUGIN_ARGS=$(jq -r '.["plugins-args"] | join(" ")' ./app.json) && \
     ../Zrvr/scripts/external/download-plugins.sh $PLUGIN_ARGS && \
-    tar -xf /tmp/mc-server-runner.tgz -C /usr/local/bin mc-server-runner && rm /tmp/mc-server-runner.tgz && \
     set -eux; \
     	savedAptMark="$(apt-mark showmanual)"; \
     	apt-get update; \
@@ -50,7 +49,10 @@ RUN apt-get -y update && \
     	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     	\
     	chmod +x /usr/local/bin/gosu && \
-        rm -rf /var/lib/apt/lists/* ./plugin_json/ ../Zrvr/scripts/external/
+        rm -rf /var/lib/apt/lists/* ./plugin_json/ ../Zrvr/scripts/external/ \
+# Try to run it separate because otherwise it seems not to work
+RUN tar -xf /tmp/mc-server-runner.tgz -C /usr/local/bin mc-server-runner && \
+    rm /tmp/mc-server-runner.tgz \
 
 EXPOSE 25565
 
