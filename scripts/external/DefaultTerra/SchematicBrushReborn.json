@@ -1,9 +1,0 @@
-{
-    "name": "SchematicBrushReborn",
-    "version": "1.0.0",
-    "download_url": "https://example.com/ExamplePlugin-1.0.0.jar",
-    "checksum": {
-      "type": "sha256",
-      "value": "d2f5e1... (full hash here)"
-    }
-}
