@@ -8,8 +8,9 @@
     },
     "dependencies": [
       {
-       "name": "Vault",
-       "download_url": "https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar"
+        "name": "Vault",
+        "version": "1.7.3",
+        "download_url": "https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar"
       }
     ]
   }

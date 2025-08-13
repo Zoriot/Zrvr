@@ -59,7 +59,7 @@ process_json() {
 
   # Handle dependencies first
   deps=$(jq -c '.dependencies // []' "$json_path")
-  if [ "$deps" != "[]" ]; then
+  if [ "$deps" != "[]" ] && [ "$deps" != ""  ]; then
     echo "Processing dependencies for $name ..."
     echo "$deps" | jq -c '.[]' | while read -r dep; do
       # Write dep to a temp file and recurse; assuming dependency object can be a mini-json
@@ -123,9 +123,8 @@ process_json() {
 
 process_dependency() {
   local dep_json=$1
-  # If the dependency object has a download_url and name, treat it like a mini-json
-  # Wrap into temp full JSON structure to reuse process_json logic
-  process_json <(jq -n --slurpfile dep "$dep_json" '$dep[0]')
+  # The temp file already contains a valid JSON object, pass it directly
+  process_json "$dep_json"
 }
 
 # Main entry: take inputs as either .jar URLs/paths or .json spec files
