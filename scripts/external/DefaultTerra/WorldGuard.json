@@ -1,0 +1,9 @@
+{
+    "name": "WorldGuard",
+    "version": "7.0.13",
+    "download_url": "https://cdn.modrinth.com/data/DKY9btbd/versions/f9NoeotB/worldguard-bukkit-7.0.13-dist.jar",
+    "checksum": {
+      "type": "sha256",
+      "value": "73b43a46aefc76514b90994532ea18bfd6d92e7bc5dcabbef9049a71778b21b5"
+    }
+}
