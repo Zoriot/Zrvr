@@ -5,5 +5,11 @@
     "checksum": {
       "type": "sha256",
       "value": "93b41b00077143c045caa433fcce17e45f072bbbb4ff15a4f68caf900f8fccd1"
-    }
+    },
+    "dependencies": [
+      {
+       "name": "Vault",
+       "download_url": "https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar"
+      }
+    ]
   }
