@@ -10,11 +10,9 @@ if [[ "$1" == "--dry-run" ]]; then
     shift
 fi
 
-# Input path
-TARGET="$1"
-
-if [[ -z "$TARGET" ]]; then
-    echo "Usage: $0 [--dry-run] <file-or-directory>"
+# Check if any targets provided
+if [[ $# -eq 0 ]]; then
+    echo "Usage: $0 [--dry-run] <file-or-directory> [<file-or-directory>...]"
     exit 1
 fi
 
@@ -37,15 +35,23 @@ process_file() {
     fi
 }
 
-# Main logic
-if [[ -f "$TARGET" ]]; then
-    process_file "$TARGET"
-elif [[ -d "$TARGET" ]]; then
-    # Exclude .jar files (add more extensions as needed: -o -name "*.zip" etc.)
-    find "$TARGET" -type f ! -name "*.jar" | while read -r file; do
-        process_file "$file"
-    done
-else
-    echo "Error: '$TARGET' is not a valid file or directory"
-    exit 1
-fi
+# Function to process a target (file or directory)
+process_target() {
+    local TARGET="$1"
+
+    if [[ -f "$TARGET" ]]; then
+        process_file "$TARGET"
+    elif [[ -d "$TARGET" ]]; then
+        # Exclude .jar files (add more extensions as needed: -o -name "*.zip" etc.)
+        find "$TARGET" -type f ! -name "*.jar" | while read -r file; do
+            process_file "$file"
+        done
+    else
+        echo "Error: '$TARGET' is not a valid file or directory"
+    fi
+}
+
+# Process all provided targets
+for target in "$@"; do
+    process_target "$target"
+done
