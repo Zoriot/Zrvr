@@ -1,0 +1,39 @@
+name: "Deploy via SSH"
+description: "Copy docker-compose file and deploy using docker compose over SSH"
+
+inputs:
+  compose-file:
+    required: true
+    description: "Path to the docker-compose file to deploy (e.g., docker-compose-prod.yml)"
+  path-to-deploy-folder:
+    required: false
+    description: "Path to the folder where the docker-compose file is located (default: ~/zrvr/)"
+    default: "~/zrvr/"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Write .env from one secret
+      shell: bash
+      run: printf "%s" '${{ env.ENV_FILE }}' > .env
+
+    - name: Copy docker-compose file to remote
+      uses: appleboy/scp-action@v1
+      with:
+        host: ${{ env.SSH_HOST }}
+        username: ${{ env.SSH_USER }}
+        key: ${{ env.SSH_KEY }}
+        source: "${{ inputs.compose-file }},.env"
+        target: "${{ inputs.path-to-deploy-folder }}"
+
+    - name: Deploy application via SSH
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ env.SSH_HOST }}
+        username: ${{ env.SSH_USER }}
+        key: ${{ env.SSH_KEY }}
+        script: |
+          cd ${{ inputs.path-to-deploy-folder }}
+          docker compose -f ${{ inputs.compose-file }} pull
+          docker compose -f ${{ inputs.compose-file }} down || true
+          docker compose -f ${{ inputs.compose-file }} up -d

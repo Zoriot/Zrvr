@@ -1,0 +1,9 @@
+{
+  "name": "Builders-Utilities",
+  "version": "2.1.1-137",
+  "download_url": "https://ci.athion.net/job/Builders-Utilities/137/artifact/build/libs/Builders-Utilities-2.1.1-137.jar",
+  "checksum": {
+    "type": "sha256",
+    "value": "a0c3736526e67ea509cb7c2158dbc268182cfe13fabdca15453317fcb97e6d97"
+  }
+}
