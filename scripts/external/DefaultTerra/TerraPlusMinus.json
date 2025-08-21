@@ -1,10 +1,10 @@
 {
   "name": "TerraPlusMinus",
-  "version": "1.5.0",
-  "download_url": "https://github.com/BTE-Germany/TerraPlusMinus/releases/download/v1.5.0/terraplusminus-1.5.0.jar",
+  "version": "terraplusminus-1.5.1-SNAPSHOT-TPLL",
+  "download_url": "https://github.com/Zoriot/Zoriot/releases/download/atj-0.0.1/terraplusminus-1.5.1-SNAPSHOT-TPLL.jar",
   "checksum": {
     "type": "sha256",
-    "value": "74d695da57ccd5ad2de861be418c482a5d2cec15b83242d9237a5c95701881a9"
+    "value": "21127e9abbe862e81ef959eb3b09330ba845e372435bc82114c904c97e2b6326"
   },
   "config_template_url": "https://raw.githubusercontent.com/BTE-Germany/TerraPlusMinus/refs/tags/v1.5.0/src/main/resources/config.yml"
 }
