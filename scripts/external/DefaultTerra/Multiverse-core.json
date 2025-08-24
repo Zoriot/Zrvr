@@ -1,9 +1,9 @@
 {
     "name": "Multiverse-core",
-    "version": "5.2.0",
-    "download_url": "https://cdn.modrinth.com/data/3wmN97b8/versions/7yf5YLd0/multiverse-core-5.2.0.jar",
+    "version": "5.2.1",
+    "download_url": "https://github.com/Multiverse/Multiverse-Core/releases/download/5.2.1/multiverse-core-5.2.1.jar",
     "checksum": {
       "type": "sha256",
-      "value": "44142bbb1040ea19c188dcb94841646fb17b57f9e83b47611116756509e1ebb7"
+      "value": "284ddefd5469d8a3a8d60522a2ea29319d3a835e6e98b2a9057a0215d8f4bfea"
 }
 }
