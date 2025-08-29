@@ -9,6 +9,14 @@ inputs:
     required: false
     description: "Path to the folder where the docker-compose file is located (default: ~/zrvr/)"
     default: "~/zrvr/"
+  additional-files:
+    required: false
+    description: "Additional files to copy to the remote server (e.g., backup scripts) - start with a comma and use comma as separator"
+    default: ""
+  additional-command:
+    required: false
+    description: "Additional command to run after deployment (e.g., database migrations or some scripts)"
+    default: ""
 
 runs:
   using: "composite"
@@ -23,7 +31,7 @@ runs:
         host: ${{ env.SSH_HOST }}
         username: ${{ env.SSH_USER }}
         key: ${{ env.SSH_KEY }}
-        source: "${{ inputs.compose-file }},.env"
+        source: "${{ inputs.compose-file }},.env${{ inputs.additional-files }}"
         target: "${{ inputs.path-to-deploy-folder }}"
 
     - name: Deploy application via SSH
@@ -37,3 +45,4 @@ runs:
           docker compose -f ${{ inputs.compose-file }} pull
           docker compose -f ${{ inputs.compose-file }} down || true
           docker compose -f ${{ inputs.compose-file }} up -d
+          ${{ inputs.additional-command }}

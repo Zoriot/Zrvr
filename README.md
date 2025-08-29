@@ -14,28 +14,20 @@ This repo contains:
 
 ## Usage
 
-### [`download-plugins.sh`](https://github.com/Zoriot/Zrvr/blob/dev/scripts/download-plugins.sh)
+### [`download-plugins.sh`](scripts/external/download-plugins.sh)
 
 ```
 ./download-plugin.sh folder-that-has-the-json-files/*
 ```
+This script will read all the JSON files in the specified folder and download the plugins to a `plugins/` folder in the current directory.
 
-#### To-do
-- [ ] Automatic Plugin Updates
+### [`repo_maint.sh`](scripts/external/repo_maint.sh)
 
-<!-- TODO Add Content how to add it & use it (Git Module) -->
+#### Pre requisites
 
-## Building Docker Images Locally
-
-You can build your Zrvr Docker image locally using the provided script:
-
-```sh
-chmod +x ./scripts/external/build-image.sh
-./scripts/external/build-image.sh ./<service-folder>
+# Debian/Ubuntu - replace 7zip with zstd/gzip if you want to use it
 ```
-
-Replace `<service-folder>` with the folder name of the service you want to build (e.g., `Lobby`, `Terra`, etc.).
-
-This script will:
-- Calculate a checksum of all shell scripts for cache busting.
-- Build the Docker image with the correct build arguments.
+sudo apt-get update
+sudo apt-get install -y tar p7zip-full rclone
+rclone config   # create a remote named "gdrive" (or whatever you used in GDRIVE_REMOTE)
+```
