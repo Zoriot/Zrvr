@@ -29,7 +29,7 @@ runs:
       id: changed-files
       uses: tj-actions/changed-files@v35
       with:
-        files: '${{ inputs.compose-file }}${{ inputs.additional-files }}'
+        files: '${{ inputs.compose-file }},${{ inputs.additional-files }}'
         since_last_remote_commit: true
         separator: ","
 
