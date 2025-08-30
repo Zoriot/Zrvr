@@ -25,21 +25,13 @@ runs:
       shell: bash
       run: printf "%s" '${{ env.ENV_FILE }}' > .env
 
-    - name: Get changed files
-      id: changed-files
-      uses: tj-actions/changed-files@v35
-      with:
-        files: '${{ inputs.compose-file }},${{ inputs.additional-files }}'
-        since_last_remote_commit: true
-        separator: ","
-
     - name: Copy docker-compose file to remote
       uses: appleboy/scp-action@v1
       with:
         host: ${{ env.SSH_HOST }}
         username: ${{ env.SSH_USER }}
         key: ${{ env.SSH_KEY }}
-        source: ".env,${{ steps.changed-files.outputs.all_changed_files }}"
+        source: ".env,${{ inputs.compose-file }}${{ inputs.additional-files }}"
         target: "${{ inputs.path-to-deploy-folder }}"
         strip_components: 4
 
