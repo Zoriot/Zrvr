@@ -60,7 +60,7 @@ compose_cmd(){
 }
 # Auto-detect compose files if not set
 if [[ -z "${COMPOSE_FILES:-}" ]]; then
-  _candidates=(docker-compose.yml docker-compose.yaml compose.yml compose.yaml)
+  _candidates=(docker-compose.yml docker-compose.yaml compose.yml compose.yaml docker-compose-dev.yml docker-compose-prod.yml)
   COMPOSE_FILES=""
   for f in "${_candidates[@]}"; do [[ -f "$REPO_DIR/$f" ]] && COMPOSE_FILES="${COMPOSE_FILES:+$COMPOSE_FILES,}$f"; done
 fi
