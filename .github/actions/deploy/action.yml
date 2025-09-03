@@ -33,8 +33,6 @@ runs:
         key: ${{ env.SSH_KEY }}
         source: ".env,${{ inputs.compose-file }}${{ inputs.additional-files }}"
         target: "${{ inputs.path-to-deploy-folder }}"
-        strip_components: 4
-
 
     - name: Deploy application via SSH
       uses: appleboy/ssh-action@v1
