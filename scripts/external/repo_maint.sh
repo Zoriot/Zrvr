@@ -50,7 +50,7 @@ mkdir -p "$BACKUP_DIR" "$LOCKDIR" "$REPO_DIR/$SNAPSHOT_DIR"
 umask 077
 
 timestamp(){ date +"%Y%m%d_%H%M%S"; }
-log(){ echo "[$(date +'%F %T')] $*"; }
+log(){ echo "[$(date +'%F %T')]" "$@" >&2; }
 have(){ command -v "$1" >/dev/null 2>&1; }
 
 compose_cmd(){
@@ -178,12 +178,12 @@ run_pipeline(){
   if [[ "$SUBCMD" == "--restart-only" ]]; then do_restart; return; fi
   if [[ "$SUBCMD" != "--backup-only" ]]; then do_stop; fi
 
-  local exfile; exfile="$(build_exclude_file)"; trap 'rm -f "$exfile"' EXIT
+  local exfile; exfile="$(build_exclude_file)"; trap '[[ -n ${exfile-} ]] && rm -f "$exfile"' EXIT
   local kind="inc"; [[ "$BACKUP_MODE" == "incremental" ]] || kind="full"
   # First run produces a full automatically (no snapshot yet)
   [[ ! -f "${REPO_DIR}/${SNAPSHOT_DIR}/${REPO_NAME}.snar" ]] && kind="full"
 
-  local archive; archive="$(backup_stream "$kind" "$exfile")"
+  local archive; archive="$(backup_stream "$kind" "$exfile" | tail -n1)"
   upload_remote "$archive"
   cleanup_local
 
