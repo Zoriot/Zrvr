@@ -16,6 +16,10 @@ inputs:
     required: false
     description: "Type of the service (e.g., paper, velocity)"
     default: "paper"
+  user_id:
+    required: false
+    description: "User ID to use in the Docker image"
+    default: "1000"
 outputs:
   image:
     value: ${{ steps.meta.outputs.image }}
@@ -66,5 +70,6 @@ runs:
           MINECRAFT_VERSION=${{ inputs.mcversion }}
           TYPE=${{ inputs.type }}
           SCRIPTS_CHECKSUM=${{ env.SCRIPTS_CHECKSUM }}
+          USER_ID=${{ inputs.user_id }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
