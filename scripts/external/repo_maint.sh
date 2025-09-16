@@ -177,6 +177,12 @@ MONGODB_USER="${MONGODB_USER:-root}"
 MONGODB_PASSWORD_ENV_FILE="${MONGODB_PASSWORD_ENV_FILE:-.env-mongodb}"
 MONGODB_PASSWORD_ENV_VAR="${MONGODB_PASSWORD_ENV_VAR:-MONGO_INITDB_ROOT_PASSWORD}"
 
+MARIADB_BACKUP_ENABLED="${MARIADB_BACKUP_ENABLED:-false}"
+MARIADB_CONTAINER="${MARIADB_CONTAINER:-bte-me-mariadb}"
+MARIADB_USER="${MARIADB_USER:-root}"
+MARIADB_PASSWORD_ENV_FILE="${MARIADB_PASSWORD_ENV_FILE:-.env-mariadb}"
+MARIADB_PASSWORD_ENV_VAR="${MARIADB_PASSWORD_ENV_VAR:-MARIADB_ROOT_PASSWORD}"
+
 mongodb_backup() {
   [[ "$MONGODB_BACKUP_ENABLED" != "true" ]] && return 0
   log "Starting mongodb backup with container $MONGODB_CONTAINER ..."
@@ -196,6 +202,25 @@ mongodb_backup() {
   upload_remote "$mongo_backup_file"
 }
 
+mariadb_backup() {
+  [[ "$MARIADB_BACKUP_ENABLED" != "true" ]] && return 0
+  log "Starting MariaDB backup with container $MARIADB_CONTAINER ..."
+  if [[ -f "$REPO_DIR/$MARIADB_PASSWORD_ENV_FILE" ]]; then
+    MARIADB_PASSWORD=$(grep "^$MARIADB_PASSWORD_ENV_VAR=" "$REPO_DIR/$MARIADB_PASSWORD_ENV_FILE" | cut -d'=' -f2-)
+  else
+    log "WARNING: $MARIADB_PASSWORD_ENV_FILE not found, skipped MariaDB Backup."
+    return 1
+  fi
+  if [[ -z "$MARIADB_PASSWORD" ]]; then
+    log "WARNING: MariaDB Password not found, skipped MariaDB Backup."
+    return 1
+  fi
+  local mariadb_backup_file="$BACKUP_DIR/mariadb_$(timestamp).sql.gz"
+  docker exec "$MARIADB_CONTAINER" sh -c "mysqldump -u$MARIADB_USER -p$MARIADB_PASSWORD --all-databases | gzip -c" > "$mariadb_backup_file"
+  log "MariaDB Backup saved as $mariadb_backup_file"
+  upload_remote "$mariadb_backup_file"
+}
+
 run_pipeline(){
   local LOCKFILE="${LOCKDIR}/${REPO_NAME}.lock"
   exec 9>"$LOCKFILE"; flock -n 9 || { echo "Another run is in progress for ${REPO_NAME}"; exit 1; }
@@ -203,7 +228,7 @@ run_pipeline(){
   if [[ "$SUBCMD" == "--restart-only" ]]; then do_restart; return; fi
   if [[ "$SUBCMD" != "--backup-only" ]]; then do_stop; fi
 
-  # MongoDB Backup in front of the minecraft server backup
+  mariadb_backup
   mongodb_backup
 
   local exfile; exfile="$(build_exclude_file)"; trap '[[ -n ${exfile-} ]] && rm -f "$exfile"' EXIT
