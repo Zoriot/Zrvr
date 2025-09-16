@@ -171,12 +171,40 @@ remove_cron(){
 }
 
 # ---------- Pipeline ----------
+MONGODB_BACKUP_ENABLED="${MONGODB_BACKUP_ENABLED:-false}"
+MONGODB_CONTAINER="${MONGODB_CONTAINER:-mongodb}"
+MONGODB_USER="${MONGODB_USER:-root}"
+MONGODB_PASSWORD_ENV_FILE="${MONGODB_PASSWORD_ENV_FILE:-.env-mongodb}"
+MONGODB_PASSWORD_ENV_VAR="${MONGODB_PASSWORD_ENV_VAR:-MONGO_INITDB_ROOT_PASSWORD}"
+
+mongodb_backup() {
+  [[ "$MONGODB_BACKUP_ENABLED" != "true" ]] && return 0
+  log "Starting mongodb backup with container $MONGODB_CONTAINER ..."
+  if [[ -f "$REPO_DIR/$MONGODB_PASSWORD_ENV_FILE" ]]; then
+    MONGODB_PASSWORD=$(grep "^$MONGODB_PASSWORD_ENV_VAR=" "$REPO_DIR/$MONGODB_PASSWORD_ENV_FILE" | cut -d'=' -f2-)
+  else
+    log "WARNING: $MONGODB_PASSWORD_ENV_FILE not found, skipped MongoDB Backup."
+    return 1
+  fi
+  if [[ -z "$MONGODB_PASSWORD" ]]; then
+    log "WARNING: MongoDB Password not found, skipped MongoDB Backup."
+    return 1
+  fi
+  local mongo_backup_file="$BACKUP_DIR/mongodb_$(timestamp).dump"
+  docker exec "$MONGODB_CONTAINER" sh -c "mongodump -u $MONGODB_USER -p $MONGODB_PASSWORD --archive --gzip" > "$BACKUP_DIR/$mongo_backup_file"
+  log "MongoDB Backup saved as $BACKUP_DIR/$MONGODB_BACKUP_FILE"
+  upload_remote "$mongo_backup_file"
+}
+
 run_pipeline(){
   local LOCKFILE="${LOCKDIR}/${REPO_NAME}.lock"
   exec 9>"$LOCKFILE"; flock -n 9 || { echo "Another run is in progress for ${REPO_NAME}"; exit 1; }
 
   if [[ "$SUBCMD" == "--restart-only" ]]; then do_restart; return; fi
   if [[ "$SUBCMD" != "--backup-only" ]]; then do_stop; fi
+
+  # MongoDB Backup in front of the minecraft server backup
+  mongodb_backup
 
   local exfile; exfile="$(build_exclude_file)"; trap '[[ -n ${exfile-} ]] && rm -f "$exfile"' EXIT
   local kind="inc"; [[ "$BACKUP_MODE" == "incremental" ]] || kind="full"
