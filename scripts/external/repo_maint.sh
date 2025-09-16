@@ -191,7 +191,7 @@ mongodb_backup() {
     return 1
   fi
   local mongo_backup_file="$BACKUP_DIR/mongodb_$(timestamp).dump"
-  docker exec "$MONGODB_CONTAINER" sh -c "mongodump -u $MONGODB_USER -p $MONGODB_PASSWORD --archive --gzip" > "$BACKUP_DIR/$mongo_backup_file"
+  docker exec "$MONGODB_CONTAINER" sh -c "mongodump -u $MONGODB_USER -p $MONGODB_PASSWORD --archive --gzip" > "$mongo_backup_file"
   log "MongoDB Backup saved as $BACKUP_DIR/$MONGODB_BACKUP_FILE"
   upload_remote "$mongo_backup_file"
 }
