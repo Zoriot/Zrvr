@@ -216,7 +216,7 @@ mariadb_backup() {
     return 1
   fi
   local mariadb_backup_file="$BACKUP_DIR/mariadb_$(timestamp).sql.gz"
-  docker exec "$MARIADB_CONTAINER" sh -c "mysqldump -u$MARIADB_USER -p$MARIADB_PASSWORD --all-databases | gzip -c" > "$mariadb_backup_file"
+  docker exec "$MARIADB_CONTAINER" sh -c "mariadb-dump -u$MARIADB_USER -p$MARIADB_PASSWORD --all-databases | gzip -c" > "$mariadb_backup_file"
   log "MariaDB Backup saved as $mariadb_backup_file"
   upload_remote "$mariadb_backup_file"
 }
