@@ -1,0 +1,9 @@
+{
+  "name": "BannerMaker",
+  "version": "2.5.1",
+  "download_url": "https://github.com/jyhsu2000/BannerMaker/releases/download/v2.5.1/BannerMaker.jar",
+  "checksum": {
+    "type": "sha256",
+    "value": "25e6967b265e2610f46647d64613cca01921eb8767b833aaaef122a7ecdfc52e"
+  }
+}
